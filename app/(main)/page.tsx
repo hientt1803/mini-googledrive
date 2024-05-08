@@ -18,23 +18,26 @@ export default function Home() {
   const createFile = useMutation(api.files.createFile);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <>
+      <div className="flex justify-between items-center">
+        <h1 className="text-4xl font-bold">Your files</h1>
+        <Button
+          onClick={() => {
+            if (!orgId) return;
+
+            createFile({
+              name: "First file",
+              orgId,
+            });
+          }}
+        >
+          Upload File
+        </Button>
+      </div>
+
       {getFiles?.map((file, index) => {
         return <div key={index}>{file.name}</div>;
       })}
-
-      <Button
-        onClick={() => {
-          if (!orgId) return;
-
-          createFile({
-            name: "First file",
-            orgId,
-          });
-        }}
-      >
-        create file
-      </Button>
-    </main>
+    </>
   );
 }
