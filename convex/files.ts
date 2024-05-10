@@ -1,6 +1,8 @@
 import { ConvexError, v } from "convex/values";
 import { mutation, MutationCtx, query, QueryCtx } from "./_generated/server";
 import { getUser } from "./users";
+import { fileTypes } from "./schema";
+import { Doc } from "./_generated/dataModel";
 
 export const generateUploadUrl = mutation(async (ctx) => {
   const identity = await ctx.auth.getUserIdentity();
@@ -30,6 +32,7 @@ export const createFile = mutation({
     name: v.string(),
     fileId: v.id("_storage"),
     orgId: v.string(),
+    type: fileTypes,
   },
   async handler(ctx, args) {
     try {
@@ -53,6 +56,7 @@ export const createFile = mutation({
         name: args.name,
         fileId: args.fileId,
         orgId: args.orgId,
+        type: args.type,
       });
     } catch (error) {
       throw new ConvexError("U got error in upload process! " + error);

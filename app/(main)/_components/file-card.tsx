@@ -27,11 +27,19 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-import { EllipsisVertical, TrashIcon } from "lucide-react";
-import { useState } from "react";
+import {
+  EllipsisVertical,
+  FileTextIcon,
+  GanttChartIcon,
+  ImageIcon,
+  ImagesIcon,
+  TrashIcon,
+} from "lucide-react";
+import { ReactNode, useState } from "react";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { toast } from "@/components/ui/use-toast";
+import Image from "next/image";
 
 const FileCardActions = ({ file }: { file: Doc<"files"> }) => {
   // API
@@ -48,7 +56,7 @@ const FileCardActions = ({ file }: { file: Doc<"files"> }) => {
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete your
-              account and remove your data from our servers.
+              file and remove your data from our servers.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -86,20 +94,54 @@ const FileCardActions = ({ file }: { file: Doc<"files"> }) => {
   );
 };
 
+// const getFileUrl = (fileId: Id<"_storage">): string => {
+//   const getImageUrl = new URL(`${process.env.NEXT_PUBLIC_CONVEX_URL}/getImage`);
+//   getImageUrl.searchParams.set("storageId", fileId);
+//   https://grandiose-spaniel-545.convex.cloud/api/storage/dae30895-d1cc-4439-9ebd-8340da4a7e26
+//   console.log(getImageUrl.href);
+
+//   return getImageUrl.href;
+// };
+
 export const FileCard = ({ file }: { file: Doc<"files"> }) => {
+  const typeIcons = {
+    image: <ImagesIcon />,
+    pdf: <FileTextIcon />,
+    csv: <GanttChartIcon />,
+  } as Record<Doc<"files">["type"], ReactNode>;
+
   return (
     <Card>
       <CardHeader className="relative">
-        <CardTitle>{file.name}</CardTitle>
+        <CardTitle className="flex gap-1">
+          <div className="flex justify-center">{typeIcons[file.type]}</div>
+          {file.name}
+        </CardTitle>
         <div className="absolute top-1 right-1">
           <FileCardActions file={file} />
         </div>
       </CardHeader>
-      <CardContent>
-        <p>Card Content</p>
+      <CardContent className="h-200 flex justify-center items-center">
+        {file.type === "image" && (
+          <Image width="200" height="100" src={"/empty.svg"} alt={file.name} />
+        )}
+
+        {file.type === "csv" && (
+          <GanttChartIcon className="w-[200px] height-[200px]" />
+        )}
+        {file.type === "pdf" && (
+          <FileTextIcon className="w-[200px] height-[200px]" />
+        )}
       </CardContent>
-      <CardFooter>
-        <Button variant="default">Download</Button>
+      <CardFooter className="flex justify-end">
+        <Button
+          variant="default"
+          onClick={() => {
+            // window.open(getFileUrl(file.fileId), "_blank");
+          }}
+        >
+          Download
+        </Button>
       </CardFooter>
     </Card>
   );

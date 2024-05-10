@@ -31,6 +31,7 @@ import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { Doc } from "@/convex/_generated/dataModel";
 
 const formSchema = z.object({
   title: z.string().min(1).max(200),
@@ -74,11 +75,18 @@ export const FileUploadDialog = ({ orgId }: FileUploadProps) => {
     });
     const { storageId } = await result.json();
 
+    const types = {
+      "image/png": "image",
+      "application/pdf": "pdf",
+      "text/csv": "csv",
+    } as Record<string, Doc<"files">["type"]>;
+
     try {
       await createFile({
         name: values.title,
         fileId: storageId,
         orgId,
+        type: types[fileType],
       });
 
       form.reset();
