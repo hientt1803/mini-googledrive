@@ -29,7 +29,7 @@ export const Header = () => {
                   <Button>Sign In</Button>
                 </SignInButton>
                 <SignUpButton>
-                  <Button>Sign Up</Button>
+                  <Button variant="secondary">Sign Up</Button>
                 </SignUpButton>
               </>
             )}
