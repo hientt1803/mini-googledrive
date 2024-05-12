@@ -33,6 +33,7 @@ import {
   GanttChartIcon,
   ImageIcon,
   ImagesIcon,
+  ListStartIcon,
   TrashIcon,
 } from "lucide-react";
 import { ReactNode, useState } from "react";
@@ -40,10 +41,12 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { toast } from "@/components/ui/use-toast";
 import Image from "next/image";
+import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu";
 
 const FileCardActions = ({ file }: { file: Doc<"files"> }) => {
   // API
   const deleteFile = useMutation(api.files.deleteFile);
+  const toggleFavorite = useMutation(api.files.toggleFavorite);
 
   // State
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -82,6 +85,15 @@ const FileCardActions = ({ file }: { file: Doc<"files"> }) => {
           <EllipsisVertical />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
+          <DropdownMenuItem
+            onClick={() => {
+              toggleFavorite({ fileId: file._id });
+            }}
+            className="flex gap-1 items-center cursor-pointer"
+          >
+            <ListStartIcon className="w-4 h-4" /> Favorites
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={() => setIsConfirmOpen(true)}
             className="flex gap-1 text-red-600 items-center cursor-pointer"
@@ -127,10 +139,10 @@ export const FileCard = ({ file }: { file: Doc<"files"> }) => {
         )}
 
         {file.type === "csv" && (
-          <GanttChartIcon className="w-[200px] height-[200px]" />
+          <GanttChartIcon className="w-[200px] h-[200px]" />
         )}
         {file.type === "pdf" && (
-          <FileTextIcon className="w-[200px] height-[200px]" />
+          <FileTextIcon className="w-[200px] h-[200px]" />
         )}
       </CardContent>
       <CardFooter className="flex justify-end">
