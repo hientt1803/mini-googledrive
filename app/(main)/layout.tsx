@@ -11,7 +11,7 @@ export default function DashboardLayout({
       <Header />
 
       <main className="container max-auto p-12">
-        <div className="flex gap-6">
+        <div className="flex flex-wrap md:flex-nowrap gap-6">
           <SideNav />
           <div className="w-full">{children}</div>
         </div>

@@ -15,7 +15,7 @@ export default function FilesBrowser({
   favorite,
 }: {
   title: string;
-  favorite: boolean;
+  favorite?: boolean;
 }) {
   const organization = useOrganization();
   const user = useUser();
@@ -31,6 +31,12 @@ export default function FilesBrowser({
     api.files.getFiles,
     orgId ? { orgId, query, favorite } : "skip"
   );
+
+  const favorites = useQuery(
+    api.files.getAllFavorites,
+    orgId ? { orgId } : "skip"
+  );
+
   const isLoading = files === undefined;
 
   return (
@@ -57,7 +63,9 @@ export default function FilesBrowser({
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {files?.map((file, index) => {
-              return <FileCard key={index} file={file} />;
+              return (
+                <FileCard key={index} favorites={favorites ?? []} file={file} />
+              );
             })}
           </div>
         </>

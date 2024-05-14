@@ -1,5 +1,6 @@
 import { ConvexError, v } from "convex/values";
 import { internalMutation, MutationCtx, QueryCtx } from "./_generated/server";
+import { roles } from "./schema";
 
 export async function getUser(
   ctx: QueryCtx | MutationCtx,
@@ -36,15 +37,18 @@ export const createUser = internalMutation({
 });
 
 export const addOrgIdToUser = internalMutation({
-  args: { tokenIdentifier: v.string(), orgId: v.string() },
+  args: { tokenIdentifier: v.string(), orgId: v.string(), role: roles },
   async handler(ctx, args) {
     try {
       const user = await getUser(ctx, args.tokenIdentifier);
 
       await ctx.db.patch(user._id, {
-        orgIds: [...user.orgIds, args.orgId],
+        orgIds: [...user.orgIds, { orgId: args.orgId, role: args.role }],
       });
+
+      console.log("updated?");
     } catch (error) {
+      console.log(error);
       throw new ConvexError("Error when create origanation: " + error);
     }
   },
